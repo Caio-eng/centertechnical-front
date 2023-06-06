@@ -1,3 +1,5 @@
+import { Router } from '@angular/router';
+import { AuthService } from './../../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -18,20 +20,28 @@ export class LoginComponent implements OnInit {
   email = new FormControl(null, Validators.email);
   senha = new FormControl(null, Validators.minLength(3));
   
-  constructor(private snackBar: MatSnackBar) { }
+  constructor(
+    private snackBar: MatSnackBar,
+    private service: AuthService,
+    private router: Router
+    ) { }
 
   ngOnInit(): void {
   }
 
   logar() {
-    this.snackBar.open('Usuário e/ou senha inválidos!', 'Login', {
-      duration: 2000
-    });
-    this.creds.senha = '';
+    this.service.authenticate(this.creds).subscribe(response => {
+      this.service.successfulLogin(response.headers.get('Authorization').substring(7));
+      this.router.navigate([''])
+    }, () => {
+      this.snackBar.open('Usuário e/ou senha inválidos', 'ERROR!', {
+        duration: 4000
+      },)
+    })
   }
 
   validaCampos(): boolean {
-    return this.email.valid && this.senha.valid ? true : false;
+    return this.email.valid && this.senha.valid
   }
 
 }
