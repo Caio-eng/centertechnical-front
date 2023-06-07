@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Credenciais } from 'src/app/models/credenciais';
 
 @Component({
@@ -11,6 +11,10 @@ import { Credenciais } from 'src/app/models/credenciais';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+
+  config: MatSnackBarConfig = {
+    duration: 4000 
+  };
 
   creds: Credenciais = {
     email: '',
@@ -34,9 +38,7 @@ export class LoginComponent implements OnInit {
       this.service.successfulLogin(response.headers.get('Authorization').substring(7));
       this.router.navigate([''])
     }, () => {
-      this.snackBar.open('Usuário e/ou senha inválidos', 'ERROR!', {
-        duration: 4000
-      },)
+      this.snackBar.open('Usuário e/ou senha inválidos', 'Fechar', this.config)
     })
   }
 
