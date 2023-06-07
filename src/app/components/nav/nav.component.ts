@@ -20,7 +20,7 @@ export class NavComponent implements OnInit {
     private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
-    this.router.navigate(['tecnicos/create'])
+    this.router.navigate(['tecnicos'])
   }
 
   logout() {
