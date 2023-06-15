@@ -1,4 +1,4 @@
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Tecnico } from './../../../models/tecnico';
 import { FormControl, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
@@ -22,10 +22,6 @@ export class TecnicoCreateComponent implements OnInit {
     dataCriacao: ''
   }
 
-   config: MatSnackBarConfig = {
-    duration: 4000 
-  };
-
   nome: FormControl = new FormControl(null, Validators.minLength(3));
   cpf: FormControl = new FormControl(null, Validators.required);
   email: FormControl = new FormControl(null, Validators.email);
@@ -33,25 +29,60 @@ export class TecnicoCreateComponent implements OnInit {
 
   constructor(
     private service: TecnicoService,
+    private router: Router,
     private snackBar: MatSnackBar,
-    private router: Router
+    private route: ActivatedRoute
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.tecnico.id = this.route.snapshot.paramMap.get('id');
+    this.findById();
+  }
 
-  create() : void {
-    this.service.create(this.tecnico).subscribe(() => {
-      this.snackBar.open('Técnico cadastrado com sucesso', 'Fechar', this.config);
-      this.router.navigate(['tecnicos']);
-    }, ex => {
-      if (ex.error.erros) {
-        ex.error.errors.forEach(element => {
-          this.snackBar.open(element.message, 'Fechar', this.config);
-        });
-      } else {
-        this.snackBar.open(ex.error.message, 'Fechar', this.config);
-      }
+  findById(): void {
+    this.service.findById(this.tecnico.id).subscribe(resposta => {
+      resposta.perfis = []
+      this.tecnico = resposta;
     })
+  }
+
+  onSubmit() : void {
+    if(this.tecnico.id) {
+      this.service.update(this.tecnico).subscribe(response => {
+        this.snackBar.open('Técnico atualizado com sucesso', 'Fechar', {
+          duration: 4000,
+          panelClass: ['success-snackbar']
+        })
+        this.router.navigate(['tecnicos']);
+      }, ex => {
+        this.snackBar.open('Erro ao atualizar o Tecnico', 'Fechar', {
+          duration: 4000,
+          panelClass: ['error-snackbar']
+        });
+      })
+    } else {
+      this.service.create(this.tecnico).subscribe(() => {
+        this.snackBar.open('Técnico cadastrado com sucesso', 'Fechar', {
+          duration: 4000,
+          panelClass: ['success-snackbar']
+        })
+        this.router.navigate(['tecnicos']);
+      }, ex => {
+        if (ex.error.erros) {
+          ex.error.errors.forEach(element => {
+            this.snackBar.open(element.message, 'Fechar', {
+              duration: 4000,
+              panelClass: ['error-snackbar']
+            });
+          });
+        } else {
+          this.snackBar.open(ex.error.message, 'Fechar', {
+            duration: 4000,
+            panelClass: ['error-snackbar']
+          });
+        }
+      })
+    }
   }
 
   addPerfil(perfil: any) : void {
