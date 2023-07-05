@@ -1,17 +1,17 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Tecnico } from './../../../models/tecnico';
+import { Cliente } from './../../../models/cliente';
 import { Component, OnInit } from '@angular/core';
-import { TecnicoService } from 'src/app/services/tecnico.service';
+import { ClienteService } from 'src/app/services/cliente.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-tecnico-delete',
-  templateUrl: './tecnico-delete.component.html',
-  styleUrls: ['./tecnico-delete.component.css']
+  selector: 'app-cliente-delete',
+  templateUrl: './cliente-delete.component.html',
+  styleUrls: ['./cliente-delete.component.css']
 })
-export class TecnicoDeleteComponent implements OnInit {
+export class ClienteDeleteComponent implements OnInit {
 
-  tecnico: Tecnico = {
+  cliente: Cliente = {
     id: '',
     nome: '',
     cpf: '',
@@ -22,31 +22,31 @@ export class TecnicoDeleteComponent implements OnInit {
   }
 
   constructor(
-    private service: TecnicoService,
+    private service: ClienteService,
     private router: Router,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.tecnico.id = this.route.snapshot.paramMap.get('id');
+    this.cliente.id = this.route.snapshot.paramMap.get('id');
     this.findById();
   }
 
   findById(): void {
-    this.service.findById(this.tecnico.id).subscribe(resposta => {
+    this.service.findById(this.cliente.id).subscribe(resposta => {
       resposta.perfis = []
-      this.tecnico = resposta;
+      this.cliente = resposta;
     })
   }
 
   delete() : void {
-    this.service.delete(this.tecnico.id).subscribe(response => {
-      this.snackBar.open('Técnico deletado com sucesso', 'Fechar', {
+    this.service.delete(this.cliente.id).subscribe(response => {
+      this.snackBar.open('Cliente deletado com sucesso', 'Fechar', {
         duration: 4000,
         panelClass: ['success-snackbar']
       })
-      this.router.navigate(['tecnicos']);
+      this.router.navigate(['clientes']);
     }, ex => {
       if (ex.error.errors) {
         ex.error.errors.array.forEach(element => {
