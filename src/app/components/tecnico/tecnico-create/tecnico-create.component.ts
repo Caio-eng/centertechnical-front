@@ -3,7 +3,7 @@ import { Tecnico } from './../../../models/tecnico';
 import { FormControl, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { TecnicoService } from 'src/app/services/tecnico.service';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-tecnico-create',
@@ -55,10 +55,19 @@ export class TecnicoCreateComponent implements OnInit {
         })
         this.router.navigate(['tecnicos']);
       }, ex => {
-        this.snackBar.open('Erro ao atualizar o Tecnico', 'Fechar', {
-          duration: 4000,
-          panelClass: ['error-snackbar']
-        });
+        if (ex.error.errors) {
+          ex.error.errors.array.forEach(element => {
+            this.snackBar.open(element.message, 'Fechar', {
+              duration: 4000,
+              panelClass: ['error-snackbar']
+            });
+          });
+        } else {
+          this.snackBar.open(ex.error.message, 'Fechar', {
+            duration: 4000,
+            panelClass: ['error-snackbar']
+          });
+        }
       })
     } else {
       this.service.create(this.tecnico).subscribe(() => {
@@ -68,8 +77,8 @@ export class TecnicoCreateComponent implements OnInit {
         })
         this.router.navigate(['tecnicos']);
       }, ex => {
-        if (ex.error.erros) {
-          ex.error.errors.forEach(element => {
+        if (ex.error.errors) {
+          ex.error.errors.array.forEach(element => {
             this.snackBar.open(element.message, 'Fechar', {
               duration: 4000,
               panelClass: ['error-snackbar']
