@@ -53,7 +53,7 @@
   <div class="tecnico">
     <mat-form-field class="full-width" appearance="outline">
         <mat-label *ngIf="!chamado.id">Selecione um técnico</mat-label>
-        <mat-label>TÉCNICO ({{ chamado.nomeTecnico }})</mat-label>
+        <mat-label *ngIf="chamado.id">TÉCNICO ({{ chamado.nomeTecnico }})</mat-label>
       <mat-select
         [(ngModel)]="chamado.tecnico"
         name="tecnico"
