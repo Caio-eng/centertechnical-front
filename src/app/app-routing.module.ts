@@ -30,7 +30,8 @@ const routes: Routes = [
       { path: 'clientes/delete/:id', component: ClienteDeleteComponent },
 
       { path: 'chamados', component: ChamadoListComponent },
-      { path: 'chamados/create', component: ChamadoCreateComponent }
+      { path: 'chamados/create', component: ChamadoCreateComponent },
+      { path: 'chamados/create/:id', component: ChamadoCreateComponent }
     ]
   }
 ];
